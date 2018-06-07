@@ -31,11 +31,11 @@
 
 VERSION="1.5"
 
-STORCLI="/usr/bin/storcli"
-TWARE="/usr/bin/tw_cli"
+STORCLIBIN="/usr/sbin/storcli"
+TWAREBIN="/usr/sbin/tw_cli"
 BC="/usr/bin/bc"
-SMARTCTL="/usr/sbin/smartctl"
-NVMECLI="/usr/sbin/nvme"
+SMARTCTLBIN="/usr/sbin/smartctl"
+NVMECLIBIN="/usr/sbin/nvme"
 LSBLK="/bin/lsblk"
 
 MESSAGE=""
@@ -133,10 +133,20 @@ function searchController {
 function checkTooling {
   case ${CONTROLLER,,} in
     *lsi*)
-      if [ ! -f $STORCLI ]; then echo "UNKNOWN: storcli tool not found"; exit 4; fi
+      if [ ! -f $STORCLIBIN ]; then
+        echo "UNKNOWN: storcli tool not found";
+        exit 4;
+      else
+        STORCLI="/usr/bin/sudo $STORCLIBIN"
+      fi
       ;;
     *3ware*)
-      if [ ! -f $TWARE ]; then echo "UNKNOWN: tw_cli tool not found"; exit 4; fi
+      if [ ! -f $TWAREBIN ];
+        then echo "UNKNOWN: tw_cli tool not found";
+        exit 4;
+      else
+        TWARE="/usr/bin/sudo $TWAREBIN"
+      fi
       ;;
   esac
 
@@ -144,10 +154,20 @@ function checkTooling {
   LOCAL_NVME=`$LSBLK -d -o name,rota | /usr/bin/awk '$2 == 0' | grep nvme | wc -l`
   if [ $LOCAL_NVME -gt 0 ];
   then
-    if [ ! -f $NVMECLI ]; then echo "UNKNOWN: nvme-cli not found"; exit 4; fi
+    if [ ! -f $NVMECLIBIN ]; then
+      echo "UNKNOWN: nvme-cli not found";
+      exit 4;
+    else
+      NVMECLI="/usr/bin/sudo $NVMECLIBIN"
+    fi
   fi
 
-  if [ ! -f $SMARTCTL ]; then echo "UNKNOWN: smartctl not found"; exit 4; fi
+  if [ ! -f $SMARTCTLBIN ]; then
+    echo "UNKNOWN: smartctl not found";
+    exit 4;
+  else
+    SMARTCTL="/usr/bin/sudo $SMARTCTLBIN"
+  fi
   if [ ! -f $BC ]; then echo "UNKNOWN: bc not found"; exit 4; fi
 }
 
@@ -157,7 +177,7 @@ function getDIDlist {
       if [ $DEBUG -eq 1 ]; then echo "LSI/AVAGO controller detected"; fi;
       DRIVER="megaraid"
       ITERATE=0
-      for c in `storcli show | egrep "^  [0-9]" | awk '{ print $1 }'`; do
+      for c in `${STORCLI} show | egrep "^  [0-9]" | awk '{ print $1 }'`; do
         CONTROLLERS[$ITERATE]=$c
         BLOCKDEVICE[$ITERATE]=`lsscsi | sed "s/\[//g; s/\]//g" | awk '{ print $1 " " $6 }' | sed "s/:/ /g" | awk '{ print \$1 " " \$5 }' | grep ^$c | tail --lines 1 | awk '{ print $2 }'`
         DIDLIST[$ITERATE]=`$STORCLI /c$ITERATE show | grep SSD | awk '{ print $2 }'`
