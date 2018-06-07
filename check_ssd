@@ -114,6 +114,8 @@ done
 # End parsing parameters
 
 function searchController {
+  if [ ! -f $LSBLK ]; then echo "UNKNOWN: lsblk not found"; exit 4; fi
+
   if [ -z ${CARD+X} ]; then
     # Check for local devices
     LOCAL_SSD=`$LSBLK -d -o name,rota | /usr/bin/awk '$2 == 0' | wc -l`
@@ -129,8 +131,6 @@ function searchController {
 }
 
 function checkTooling {
-  if [ ! -f $LSBLK ]; then echo "UNKNOWN: lsblk not found"; exit 4; fi
-
   case ${CONTROLLER,,} in
     *lsi*)
       if [ ! -f $STORCLI ]; then echo "UNKNOWN: storcli tool not found"; exit 4; fi
@@ -252,8 +252,8 @@ function checkSSDs {
     done
 }
 
-checkTooling # must run as first
 searchController
+checkTooling
 getDIDlist
 hasSSDs
 
