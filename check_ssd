@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Written by Rudy Broersma, Duocast BV <r.broersma@duocast.nl> 
+# Written by Rudy Broersma, Duocast BV <r.broersma@duocast.nl>
 # NVMe functionality added by Lukas de Boer <lukas@luqq.nl>
 #
 # This script needs work:
@@ -8,11 +8,11 @@
 #
 # According to http://www.anandtech.com/show/8239/update-on-samsung-850-pro-endurance-vnand-die-size
 # a drive should continue to work fine even when the value reaches 0, because:
-# "according to JEDEC spec the P/E cycle rating is with one-year data retention, 
+# "according to JEDEC spec the P/E cycle rating is with one-year data retention,
 # meaning that there can still be plenty of life left."
 #
 # I purposely set the values to 90 (warning) and 80 (critical) to get very early warnings
-# to see if this check works okay. We can later set it to reasonable values such as 1 
+# to see if this check works okay. We can later set it to reasonable values such as 1
 # and 10
 #
 # WARNING: Block devices naming scheme is dependent on device creation time.
@@ -39,7 +39,7 @@ NVMECLI="/usr/sbin/nvme"
 LSBLK="/bin/lsblk"
 
 MESSAGE=""
-EXITCODE=0  
+EXITCODE=0
 PREFIX="SSD OK"
 TESTMODE=0
 DEBUG=0
@@ -104,13 +104,13 @@ done
 # End parsing parameters
 
 function searchController {
-  if [ -z ${CARD+X} ]; then 
+  if [ -z ${CARD+X} ]; then
     # Check for local devices
     LOCAL_SSD=`$LSBLK -d -o name,rota | /usr/bin/awk '$2 == 0' | wc -l`
     if [ $LOCAL_SSD -gt 0 ];
     then
       CONTROLLER="auto"
-    else 
+    else
       CONTROLLER=`lspci | grep RAID`
     fi
   else
@@ -213,10 +213,10 @@ function checkDID () {
         if [[ $d =~ ^/dev/nvme.* ]]; then
                 VALUE=`echo \`$NVMECLI smart-log-add $d | grep "^wear_leveling" | tr -d '%' | awk '{ print $3 }'\` + 0 | bc`
         else
-                VALUE=`echo \`$SMARTCTL -A -d auto $d | grep "^177\|^233" | awk '{ print $4 }'\` + 0 | bc`  
+                VALUE=`echo \`$SMARTCTL -A -d auto $d | grep "^177\|^233" | awk '{ print $4 }'\` + 0 | bc`
         fi
       else
-        VALUE=`echo \`$SMARTCTL -A -d $DRIVER,$d ${BLOCKDEVICE[$1]} | grep "^177\|^233" | awk '{ print $4 }'\` + 0 | bc`  
+        VALUE=`echo \`$SMARTCTL -A -d $DRIVER,$d ${BLOCKDEVICE[$1]} | grep "^177\|^233" | awk '{ print $4 }'\` + 0 | bc`
       fi
       case $VALUE in
       100)
@@ -227,7 +227,7 @@ function checkDID () {
         ;;
       [2-3][0-9])
         MESSAGE+="Drive $d on $1 MEDIUM WLC/MWI ($VALUE). "
-        if [ "$EXITCODE" -eq "0" ]; then     
+        if [ "$EXITCODE" -eq "0" ]; then
           EXITCODE=1
           PREFIX="SSD WARNING"
         fi
@@ -288,7 +288,7 @@ else
 
   MESSAGE="$PREFIX: ($DRIVER) $MESSAGE"
   echo -e $MESSAGE
-  exit $EXITCODE  
+  exit $EXITCODE
 
 fi
 
