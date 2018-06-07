@@ -50,11 +50,21 @@ BRAND="SAMSUNG\|INTEL"
 declare -A CONTROLLERS
 declare -A BLOCKDEVICE
 declare -A DIDLIST
+declare -A WARNING=40
+declare -A CRITICAL=20
 
 # Parse commandline parameters
 for i in "$@"
 do
 case $i in
+    -W=*|--warning=*)
+    WARNING="${i#*=}"
+    shift
+    ;;
+    -C=*|--critical=*)
+    CRITICAL="${i#*=}"
+    shift
+    ;;
     -c=*|--card=*)
     CARD="${i#*=}"
     shift # past argument=value
@@ -218,31 +228,20 @@ function checkDID () {
       else
         VALUE=`echo \`$SMARTCTL -A -d $DRIVER,$d ${BLOCKDEVICE[$1]} | grep "^177\|^233" | awk '{ print $4 }'\` + 0 | bc`
       fi
-      case $VALUE in
-      100)
-        MESSAGE+="Drive $d on $1 WLC/MWI $VALUE. "
-        ;;
-      [4-9][0-9])
-        MESSAGE+="Drive $d on $1 WLC/MWI $VALUE. "
-        ;;
-      [2-3][0-9])
+
+      if [ ${VALUE} -lt ${CRITICAL} ]; then
+        MESSAGE+="Drive $d on $1 CRITICAL WLC/MWI ($VALUE). "
+        EXITCODE=2
+        PREFIX="SSD CRITICAL"
+      elif [ ${VALUE} -lt ${WARNING} ]; then
         MESSAGE+="Drive $d on $1 MEDIUM WLC/MWI ($VALUE). "
         if [ "$EXITCODE" -eq "0" ]; then
           EXITCODE=1
           PREFIX="SSD WARNING"
         fi
-        ;;
-      [0-1]*)
-        MESSAGE+="Drive $d on $1 CRITICAL WLC/MWI ($VALUE). "  
-        EXITCODE=2  
-        PREFIX="SSD CRITICAL"
-        ;;
-      *)
-        MESSAGE="Unknown error occured."
-        EXITCODE=4
-        PREFIX="SSD UNKNOWN"
-      ;;
-      esac
+      else
+        MESSAGE+="Drive $d on $1 WLC/MWI $VALUE. "
+      fi
   done
 }
 
