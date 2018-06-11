@@ -48,6 +48,7 @@ HAS_SSD=0
 BRAND="SAMSUNG\|INTEL"
 WARNING=40
 CRITICAL=20
+NOSSD=0
 
 # Declare as arrays
 declare -A CONTROLLERS
@@ -91,6 +92,7 @@ case $i in
     echo -e ""
     echo -e "-d,   --debug              Enable debug output"
     echo -e "-t,   --test               Only test if there are SSDs present in the system. exits with 0 when found, 1 if not"
+    echo -e "-n,   --nossd              Not having SSD is OK."
     echo -e "-h,   --help               Show what you are reading now!"
     echo -e "-v,   --version            Show version"
     echo -e "\n\n"
@@ -98,6 +100,9 @@ case $i in
     ;;
     -t|--test)
     TESTMODE=1
+    ;;
+    -n|--nossd)
+    NOSSD=1
     ;;
     -d|--debug)
     DEBUG=1
@@ -299,8 +304,13 @@ else
     checkSSDs
   else
     MESSAGE="No SSDs found in this system on controller $CONTROLLER"
-    EXITCODE=4
-    PREFIX="UNKNOWN"
+    if [ $NOSSD -eq 1 ]; then
+      EXITCODE=0
+      PREFIX="OK"
+    else
+      EXITCODE=4
+      PREFIX="UNKNOWN"
+    fi
   fi
 
   MESSAGE="$PREFIX: ($DRIVER) $MESSAGE | $PERF_DATA"
