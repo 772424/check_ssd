@@ -245,10 +245,10 @@ function checkDID () {
         if [[ $d =~ ^/dev/nvme.* ]]; then
                 VALUE=`echo \`$NVMECLI smart-log-add $d | grep "^wear_leveling" | tr -d '%' | awk '{ print $3 }'\` + 0 | bc`
         else
-                VALUE=`echo \`$SMARTCTL -A -d auto $d | grep "^177\|^233" | awk '{ print $4 }'\` + 0 | bc`
+                VALUE=`echo \`$SMARTCTL -A -d auto $d | grep "^177\|^233" | head -n1 |awk '{ print $4 }'\` + 0 | bc`
         fi
       else
-        VALUE=`echo \`$SMARTCTL -A -d $DRIVER,$d ${BLOCKDEVICE[$1]} | grep "^177\|^233" | awk '{ print $4 }'\` + 0 | bc`
+        VALUE=`echo \`$SMARTCTL -A -d $DRIVER,$d ${BLOCKDEVICE[$1]} | grep "^177\|^233" | head -n1 | awk '{ print $4 }'\` + 0 | bc`
       fi
 
       if [ ${VALUE} -lt ${CRITICAL} ]; then
