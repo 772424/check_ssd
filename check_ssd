@@ -115,10 +115,6 @@ case $i in
     echo $VERSION
     exit
     ;;
-    --default)
-    DEFAULT=YES
-    shift # past argument with no value
-    ;;
     *)
             # unknown option
     ;;
@@ -299,7 +295,7 @@ then
     if [ $DEBUG -eq 1 ]; then echo "No SSDs found in the system on controller $CONTROLLER"; fi;
     exit 1
   else
-    if [ $DEBUG -eq 1 ]; then echo "SSDs are found in the system on controller $CONTROLLER"; fi;
+    if [ $DEBUG -eq 1 ]; then echo "SSDs found in the system on controller $CONTROLLER"; fi;
     exit 0
   fi
 else
