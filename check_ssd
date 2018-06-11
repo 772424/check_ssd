@@ -80,6 +80,10 @@ case $i in
     BRAND="${BRAND^^}"
     shift
     ;;
+    -s=*|--storcli=*)
+    STORCLIBIN="${i#*=}"
+    shift # past argument=value
+    ;;
     -h|--help)
     echo -e "check_ssd - version $VERSION.\n\nThis tool can be used to check the life expectancy of a SSD drive by checking wear leveling indicators using smartmontools."
     echo -e "You can specify the following parameters:\n\n"
