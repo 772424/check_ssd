@@ -188,7 +188,7 @@ function getDIDlist {
       ITERATE=0
       for c in `${STORCLI} show | egrep "^  [0-9]" | awk '{ print $1 }'`; do
         CONTROLLERS[$ITERATE]=$c
-        BLOCKDEVICE[$ITERATE]=`lsscsi | sed "s/\[//g; s/\]//g" | awk '{ print $1 " " $6 }' | sed "s/:/ /g" | awk '{ print \$1 " " \$5 }' | grep ^$c | tail --lines 1 | awk '{ print $2 }'`
+        BLOCKDEVICE[$ITERATE]=`lsscsi -w $c:*:*:*|awk '{print $NF}'|tail -1`
         DIDLIST[$ITERATE]=`$STORCLI /c$ITERATE show | grep SSD | awk '{ print $2 }'`
         if [ $DEBUG -eq 1 ]; then echo "Found controller #${CONTROLLERS[$ITERATE]} with associated blockdevice ${BLOCKDEVICE[$ITERATE]}"; fi;
 
