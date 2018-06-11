@@ -39,6 +39,7 @@ NVMECLIBIN="/usr/sbin/nvme"
 LSBLK="/bin/lsblk"
 
 MESSAGE=""
+PERF_DATA=""
 EXITCODE=0
 PREFIX="SSD OK"
 TESTMODE=0
@@ -258,6 +259,8 @@ function checkDID () {
       else
         MESSAGE+="Drive $d on $1 WLC/MWI $VALUE. "
       fi
+      # ADD PERF DATA
+      PERF_DATA+="Drive_${1}_${d}=$VALUE, "
   done
 }
 
@@ -300,7 +303,7 @@ else
     PREFIX="UNKNOWN"
   fi
 
-  MESSAGE="$PREFIX: ($DRIVER) $MESSAGE"
+  MESSAGE="$PREFIX: ($DRIVER) $MESSAGE | $PERF_DATA"
   echo -e $MESSAGE
   exit $EXITCODE
 
