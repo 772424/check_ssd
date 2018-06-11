@@ -45,13 +45,13 @@ TESTMODE=0
 DEBUG=0
 HAS_SSD=0
 BRAND="SAMSUNG\|INTEL"
+WARNING=40
+CRITICAL=20
 
 # Declare as arrays
 declare -A CONTROLLERS
 declare -A BLOCKDEVICE
 declare -A DIDLIST
-declare -A WARNING=40
-declare -A CRITICAL=20
 
 # Parse commandline parameters
 for i in "$@"
@@ -81,6 +81,9 @@ case $i in
     -h|--help)
     echo -e "check_ssd - version $VERSION.\n\nThis tool can be used to check the life expectancy of a SSD drive by checking wear leveling indicators using smartmontools."
     echo -e "You can specify the following parameters:\n\n"
+    echo -e "-W=,  --warning=           Set the warning threshold of the check. Default is 40."
+    echo -e "-C=,  --critical=          Set the critical threshold of the check. Default is 20."
+    echo -e ""
     echo -e "-c=,  --card=              Instead of autodetecting using lspci, set the card type. We accept \"lsi\", \"3ware\" and \"auto\" for now. Auto is autodetect"
     echo -e "-d=,  --device=            The blockdevice we should use for calling smartmontools. Can be any blockdevice in /dev, but is driver specific"
     echo -e "-b=,  --brand=             The brand of SSD to search for. We accept \"samsung\" and \"intel\""
