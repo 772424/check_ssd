@@ -32,21 +32,26 @@ LSI 9341 Controller:
 
 The script supports the following parameters:
 
+    -W=,  --warning=           Set the warning threshold of the check. Default is 40.
+    -C=,  --critical=          Set the critical threshold of the check. Default is 20.
 
     -c=,  --card=              Instead of autodetecting using lspci, set the card type. We accept "lsi", "3ware" and "auto" for now. Auto is autodetect
     -d=,  --device=            The blockdevice we should use for calling smartmontools. Can be any blockdevice in /dev, but is driver specific
     -b=,  --brand=             The brand of SSD to search for. We accept "samsung" and "intel"
-    
+
     -d,   --debug              Enable debug output
     -t,   --test               Only test if there are SSDs present in the system. exits with 0 when found, 1 if not
+    -s=,  --storcli=           Add a custom path for storcli binary.
+    -n,   --nossd              Not having SSD is OK.
     -h,   --help               Show what you are reading now!
+    -v,   --version            Show version
 
 ## Requirements
 
 The script uses the following tools:
 
 - smartctl for retrieving SMART data
-- storcli for managing LSI controllers
+- storcli for managing LSI controllers. Vendor specific tools might be required, for example for Dell PERC.
 - tw_cli for managing 3Ware controllers
 - nvme-cli for managing nvme disks
 - bc for calculations
@@ -62,7 +67,7 @@ The script uses the following tools:
 In our case we call the script after the RAID status check completes with exit code zero, and explicitly set the card type within the script. e.g.:
 
 in check_lsi_raid:
-        
+
     sub getSSDstatus {
         system("/usr/bin/check_ssd -t -c=lsi");
         if ($? == 0) {
@@ -76,10 +81,10 @@ in check_lsi_raid:
         }
     }
 
-    ... 
+    ...
 
     if($exitstatus == 0) {
-                print "LSIRAID OK (Ctrl #$controller) | STATUS=$exitstatus\n"; 
+                print "LSIRAID OK (Ctrl #$controller) | STATUS=$exitstatus\n";
                 my $exitcode = getSSDstatus();
                 exit($exitcode);
 
