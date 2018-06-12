@@ -96,6 +96,7 @@ case $i in
     echo -e ""
     echo -e "-d,   --debug              Enable debug output"
     echo -e "-t,   --test               Only test if there are SSDs present in the system. exits with 0 when found, 1 if not"
+    echo -e "-s=,  --storcli=           Add a custom path for storcli binary."
     echo -e "-n,   --nossd              Not having SSD is OK."
     echo -e "-h,   --help               Show what you are reading now!"
     echo -e "-v,   --version            Show version"
