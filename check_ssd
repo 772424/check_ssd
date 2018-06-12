@@ -194,6 +194,12 @@ function getDIDlist {
 
         ITERATE=$((ITERATE + 1))
       done
+
+      # This check is added to servers with a controller, the tool might not be the correct one
+      if [ $ITERATE -eq 0 ]; then
+        echo "UNKNOWN: Unknown controller or no controller found. Please check your vendor for the proper version of storcli."
+        exit 4
+      fi
     ;;
     *3ware*)
       if [ $DEBUG -eq 1 ]; then echo "3ware controller detected"; fi;
