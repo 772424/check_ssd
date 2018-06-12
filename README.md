@@ -92,6 +92,7 @@ in check_lsi_raid:
 
 # ChangeLog:
 
+- Version 1.6: Add performance data, fix issues with non standar lsi cards, several fixes and extra options. Check changelog
 - Version 1.5: Tiny bugfix
 - Version 1.4: Support for NVMe disks.
 - Version 1.3: Replace lsblk -S with lsscsi. -S flag on lsblk is not available on Wheezy
