@@ -29,10 +29,11 @@
 # 1.4           Add support for NVMe disks
 # 1.5           Bugfix: Actually run checkTooling before using the tools that needs checking
 # 1.6:          Add performance data, fix issues with non standar lsi cards, several fixes and extra options. Check changelog
+# 1.7:          Fix all shellcheck warning and recommandations. Use wear level value from smart-log if smart-log-add command does not exists
 
 set -o errexit -o pipefail
 
-VERSION="1.6"
+VERSION="1.7"
 
 STORCLIBIN="/usr/sbin/storcli"
 TWAREBIN="/usr/sbin/tw_cli"
