@@ -92,6 +92,7 @@ in check_lsi_raid:
 
 # ChangeLog:
 
+- Version 1.7: Fix all shellcheck warning and recommandations. Use wear level value from smart-log if smart-log-add command does not exists
 - Version 1.6: Add performance data, fix issues with non standar lsi cards, several fixes and extra options. Check changelog
 - Version 1.5: Tiny bugfix
 - Version 1.4: Support for NVMe disks.
