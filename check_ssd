@@ -30,6 +30,8 @@
 # 1.5           Bugfix: Actually run checkTooling before using the tools that needs checking
 # 1.6:          Add performance data, fix issues with non standar lsi cards, several fixes and extra options. Check changelog
 
+set -o errexit -o pipefail
+
 VERSION="1.6"
 
 STORCLIBIN="/usr/sbin/storcli"
